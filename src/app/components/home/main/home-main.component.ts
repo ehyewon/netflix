@@ -21,9 +21,9 @@ export class HomeMainComponent implements OnInit, OnDestroy {
 
   apiKey: string = localStorage.getItem('TMDb-Key') || 'b4303f4fca2d461848894c447fbf6a72';
   featuredMovie: any = null;
-  popularMoviesUrl: string = 'b4303f4fca2d461848894c447fbf6a72';
-  newReleasesUrl: string = 'b4303f4fca2d461848894c447fbf6a72';
-  actionMoviesUrl: string = 'b4303f4fca2d461848894c447fbf6a72';
+  popularMoviesUrl: string = '';
+  newReleasesUrl: string = '';
+  actionMoviesUrl: string = '';
 
   private scrollListener: any;
 
