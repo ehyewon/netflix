@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { faSearch, faUser } from '@fortawesome/free-solid-svg-icons';
-import {URLService} from '../../../util/movie/URL';
-import {BannerComponent} from '../../../views/home-main/banner.component';
-import {MovieRowComponent} from '../../../views/home-main/movie-row.component';
+import { URLService } from '../../../util/movie/URL';
+import { BannerComponent } from '../../../views/home-main/banner.component';
+import { MovieRowComponent } from '../../../views/home-main/movie-row.component';
 
 @Component({
   selector: 'app-home',
@@ -19,7 +19,9 @@ export class HomeMainComponent implements OnInit, OnDestroy {
   faSearch = faSearch;
   faUser = faUser;
 
+  // ✔ 수정 1: localStorage key 이름을 'TMDb-Key'로 고정
   apiKey: string = localStorage.getItem('TMDb-Key') || '';
+
   featuredMovie: any = null;
   popularMoviesUrl: string = '';
   newReleasesUrl: string = '';
@@ -44,8 +46,12 @@ export class HomeMainComponent implements OnInit, OnDestroy {
     window.removeEventListener('scroll', this.scrollListener);
   }
 
-  private async loadFeaturedMovie() {
-    this.featuredMovie = await this.urlService.fetchFeaturedMovie(this.apiKey);
+  // ✔ 수정 2: async/await → then()으로 변경 (Angular 화면 갱신 문제 해결)
+  private loadFeaturedMovie() {
+    this.urlService.fetchFeaturedMovie(this.apiKey)
+      .then(movie => {
+        this.featuredMovie = movie;
+      });
   }
 
   private initializeScrollListener() {
