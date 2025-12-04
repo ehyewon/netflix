@@ -13,8 +13,15 @@
         <p><strong>개봉일:</strong> {{ movie.release_date }}</p>
         <p><strong>평점:</strong> ⭐ {{ movie.vote_average }}</p>
 
-        <div class="genres">
-            <span *ngFor="let g of movie.genres">{{ g.name }}</span>
+        <div class="genre-list">
+            <span *ngFor="let g of movie.genres" class="genre-tag">
+                {{ g.name }}
+            </span>
+        </div>
+
+        <!-- 🔥 여백을 넉넉히 준 뒤에 이전 버튼 -->
+        <div class="detail-back-btn">
+            <button (click)="goBack()">← 이전으로</button>
         </div>
     </div>
 

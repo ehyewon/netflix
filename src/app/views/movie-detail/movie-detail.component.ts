@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { URLService } from '../../util/movie/URL';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-movie-detail',
@@ -16,7 +17,8 @@ export class MovieDetailComponent implements OnInit {
 
     constructor(
         private route: ActivatedRoute,
-        private urlService: URLService
+        private urlService: URLService,
+        private router: Router
     ) { }
 
     async ngOnInit() {
@@ -24,6 +26,10 @@ export class MovieDetailComponent implements OnInit {
         if (movieId) {
             this.movie = await this.urlService.getMovieDetail(Number(movieId));
         }
+    }
+
+    goBack() {
+        window.history.back();
     }
 
     getImage(path: string) {
