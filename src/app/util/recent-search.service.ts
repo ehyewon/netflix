@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class RecentSearchService {
 
     private STORAGE_KEY = 'recent-searches';
-    private MAX_LENGTH = 10; // 최근 검색어 최대 10개 저장
+    private MAX_LENGTH = 5; // 최근 검색어 최대 10개 저장
 
     constructor() { }
 

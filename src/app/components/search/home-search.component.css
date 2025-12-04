@@ -17,3 +17,13 @@
 .content-search {
   width: 100%;
 }
+
+.home-search-wrapper {
+  margin-top: -40px;
+  /* 컨테이너 자체를 위로 끌어올리기 */
+}
+
+.movie-grid {
+  margin-top: -100px;
+  /* 영화 카드 영역 위쪽 여백 줄이기 */
+}

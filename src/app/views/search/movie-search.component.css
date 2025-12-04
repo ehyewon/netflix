@@ -1,8 +1,56 @@
+/* =======================
+    검색창 (기존 CSS)
+======================= */
+.search-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.search-box {
+  display: flex;
+  gap: 8px;
+  width: 400px;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #666;
+  background: #222;
+  color: #fff;
+}
+
+.search-btn {
+  padding: 10px 18px;
+  background: #fff;
+  color: #000;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.search-btn:hover {
+  background: #ddd;
+}
+
+
+/* =======================
+    필터 드롭다운 (기존 CSS)
+======================= */
 .dropdown-container {
-  margin-top: 0;
+  margin-top: 15px;
   display: flex;
   align-items: center;
   gap: 15px;
+}
+
+.filter-title {
+  color: #fff;
+  font-size: 14px;
+  margin-right: 10px;
 }
 
 .custom-select {
@@ -16,7 +64,7 @@
   color: white;
   padding: 10px;
   border: 1px solid #fff;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
 }
 
@@ -41,34 +89,14 @@
   background-color: #575757;
 }
 
-.select-arrow-active:after {
-  content: "\25B2";
-  position: absolute;
-  right: 10px;
-  top: 14px;
-}
-
-.select-selected:after {
-  content: "\25BC";
-  position: absolute;
-  right: 10px;
-  top: 14px;
-}
-
-.select-selected.select-arrow-active:after {
-  content: "\25B2";
-}
-
 .clear-options {
   min-width: 120px;
   background-color: black;
   color: white;
   padding: 10px;
   border: 1px solid #fff;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.3s;
-  border-radius: 0 !important;
 }
 
 .clear-options:hover {
@@ -76,23 +104,63 @@
 }
 
 
-/*검색창 css*/
-.search-area {
+/* =======================
+    최근 검색어 Chip UI (새로 추가)
+======================= */
+.recent-wrapper {
+  margin-top: 25px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.recent-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #fff;
+  text-align: right;
+}
+
+.recent-chip-container {
   display: flex;
-  justify-content: center;
-  margin: 20px 0;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
 }
 
-.search-input {
-  width: 380px;
-  padding: 12px 15px;
-  font-size: 16px;
-  border: 1px solid #555;
-  border-radius: 8px;
-  background-color: #1e1e1e;
-  color: white;
+.recent-chip {
+  display: flex;
+  align-items: center;
+  background-color: #2a2a2a;
+  border: 1px solid #444;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.25s ease;
 }
 
-.search-input::placeholder {
-  color: #aaa;
+.recent-chip .icon {
+  margin-right: 6px;
+}
+
+.recent-chip:hover {
+  background-color: #444;
+  transform: translateY(-2px);
+}
+
+.recent-chip:active {
+  transform: scale(0.96);
+}
+
+@media (max-width: 480px) {
+  .recent-chip-container {
+    gap: 8px;
+  }
+
+  .recent-chip {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
 }
