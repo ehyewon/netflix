@@ -1,16 +1,12 @@
 <div class="container-search">
-
   <div class="container-search-bar">
-    <!-- 검색창 + 옵션 필터 (컴포넌트로 불러오기) -->
     <app-movie-search (changeOptions)="changeOptions($event)" (keywordChanged)="onKeywordChanged($event)">
     </app-movie-search>
   </div>
 
   <div class="content-search">
-    <!-- 영화 검색 결과 -->
     <app-movie-infinite-scroll [apiKey]="apiKey" [genreCode]="genreId" [sortingOrder]="sortId" [voteEverage]="ageId"
       [keyword]="keyword">
     </app-movie-infinite-scroll>
   </div>
-
 </div>
