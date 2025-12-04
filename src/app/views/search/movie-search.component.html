@@ -4,12 +4,8 @@
     <div class="select-selected" (click)="toggleDropdown(dropdown.key)">
       {{ selectedOptions[dropdown.key] }}
     </div>
-    <div
-      *ngIf="activeDropdown === dropdown.key"
-      class="select-items"
-    >
-      <div *ngFor="let option of dropdown.options"
-           (click)="selectOption(dropdown.key, option)">
+    <div *ngIf="activeDropdown === dropdown.key" class="select-items">
+      <div *ngFor="let option of dropdown.options" (click)="selectOption(dropdown.key, option)">
         {{ option }}
       </div>
     </div>

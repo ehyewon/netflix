@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {MovieSearchComponent} from '../../views/search/movie-search.component';
-import {SearchOptions} from '../../../models/types';
-import {MovieInfiniteScrollComponent} from '../../views/views/movie-infinite-scroll.component';
+import { MovieSearchComponent } from '../../views/search/movie-search.component';
+import { MovieInfiniteScrollComponent } from '../../views/scroll/movie-infinite-scroll.component';
+import { SearchOptions } from '../../../models/types';
+
+// ⭐⭐ 환경변수 경로는 이걸로 맞춰야 함 (너 프로젝트에 따라 다름)
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-home-search',
@@ -12,8 +15,11 @@ import {MovieInfiniteScrollComponent} from '../../views/views/movie-infinite-scr
   styleUrls: ['./home-search.component.css']
 })
 export class HomeSearchComponent {
-  apiKey: string = localStorage.getItem('TMDb-Key') || '';
-  genreId: string = '28';
+
+  // ⭐ 키가 존재해야 정확하게 동작함
+  apiKey: string = environment.TMDB_KEY;
+
+  genreId: string = '0';
   ageId: number = -1;
   sortId: string = 'all';
 

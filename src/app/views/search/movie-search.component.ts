@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {SearchOptions} from '../../../models/types';
+import { SearchOptions } from '../../../models/types';
 
 type DropdownKey = 'originalLanguage' | 'translationLanguage' | 'sorting';
 
@@ -26,7 +26,7 @@ export class MovieSearchComponent {
     sorting: '언어 (전체)'
   };
 
-  selectedOptions: SearchOptions = {...this.DEFAULT_OPTIONS};
+  selectedOptions: SearchOptions = { ...this.DEFAULT_OPTIONS };
   activeDropdown: DropdownKey | null = null;
 
   get dropdownEntries() {
@@ -50,7 +50,9 @@ export class MovieSearchComponent {
   }
 
   clearOptions(): void {
-    this.selectedOptions = {...this.DEFAULT_OPTIONS};
+    this.selectedOptions = { ...this.DEFAULT_OPTIONS };
     this.changeOptions.emit(this.selectedOptions);
   }
+
 }
+

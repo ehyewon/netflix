@@ -25,11 +25,7 @@ export class HomePopularComponent implements OnInit {
   apiKey = localStorage.getItem('TMDb-Key') || '';
   currentView = 'grid';
 
-  constructor(
-    private urlService: URLService
-
-  ) {
-  }
+  constructor(private urlService: URLService) { }
 
   ngOnInit(): void {
     this.disableScroll();
@@ -52,7 +48,8 @@ export class HomePopularComponent implements OnInit {
     document.body.style.overflow = 'auto';
   }
 
+  // ✔ grid에서 필요한 URL만 반환
   fetFetchURL(): string {
-    return this.urlService.getURL4PopularMovies();
+    return this.urlService.getPopularMoviesURL();
   }
 }

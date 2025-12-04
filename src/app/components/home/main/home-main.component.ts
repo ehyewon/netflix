@@ -6,8 +6,8 @@ import { MovieRowComponent } from '../../../views/home-main/movie-row.component'
 
 @Component({
   selector: 'app-home',
-  templateUrl: './home-main.component.html',
   standalone: true,
+  templateUrl: './home-main.component.html',
   styleUrls: ['./home-main.component.css'],
   imports: [
     BannerComponent,
@@ -15,38 +15,51 @@ import { MovieRowComponent } from '../../../views/home-main/movie-row.component'
   ]
 })
 export class HomeMainComponent implements OnInit, OnDestroy {
+
   faSearch = faSearch;
   faUser = faUser;
 
   featuredMovie: any = null;
-  popularMoviesUrl: string = '';
-  newReleasesUrl: string = '';
-  actionMoviesUrl: string = '';
+
+  // 🔥 HTML에 쓰이는 fetchUrl 변수들 (URL 기반 컴포넌트용)
+  popularMoviesUrl: string = "";
+  newReleasesUrl: string = "";
+  actionMoviesUrl: string = "";
+
+  // 🔥 데이터로 직접 사용하는 목록들
+  popularMovies: any[] = [];
+  newReleases: any[] = [];
+  actionMovies: any[] = [];
 
   private scrollListener: any;
 
   constructor(private urlService: URLService) { }
 
-  ngOnInit() {
-    // URL 생성은 환경변수 기반 URLService가 처리
-    this.popularMoviesUrl = this.urlService.getURL4PopularMovies();
-    this.newReleasesUrl = this.urlService.getURL4ReleaseMovies();
-    this.actionMoviesUrl = this.urlService.getURL4GenreMovies('28');
+  async ngOnInit() {
 
-    this.loadFeaturedMovie();
+    // ================================
+    // 1) URL 방식 (HTML의 fetchUrl에 전달)
+    // ================================
+    this.popularMoviesUrl = this.urlService.getPopularMoviesURL();
+    this.newReleasesUrl = this.urlService.getPopularMoviesURL(2);
+    this.actionMoviesUrl = this.urlService.getMoviesByGenreURL(28);
+
+    // ================================
+    // 2) 실제 영화 데이터 로딩
+    // ================================
+    this.featuredMovie = await this.urlService.fetchFeaturedMovie();
+    this.popularMovies = await this.urlService.getPopularMovies(1);
+    this.newReleases = await this.urlService.getPopularMovies(2);
+    this.actionMovies = await this.urlService.getMoviesByGenre(28);
+
+    // ================================
+    // 3) 스크롤 이벤트
+    // ================================
     this.initializeScrollListener();
   }
 
   ngOnDestroy() {
     window.removeEventListener('scroll', this.scrollListener);
-  }
-
-  private async loadFeaturedMovie() {
-    this.featuredMovie = await this.urlService.fetchFeaturedMovie();
-
-    if (!this.featuredMovie) {
-      console.warn("배너 영화 로드 실패");
-    }
   }
 
   private initializeScrollListener() {
@@ -58,7 +71,6 @@ export class HomeMainComponent implements OnInit, OnDestroy {
         header?.classList.remove('scrolled');
       }
     };
-
     window.addEventListener('scroll', this.scrollListener);
   }
 }

@@ -1,0 +1,75 @@
+/* 찾아보기 페이지 영화 행열 및 카드 스타일 */
+
+/* 전체 그리드 영역 */
+.movie-grid {
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+}
+
+/* 내부 컨테이너 (그룹 묶음) */
+.grid-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+/* 한 줄(=한 그룹) */
+.movie-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
+    justify-items: center;
+}
+
+/* 영화 카드 스타일 */
+.movie-card {
+    width: 160px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.movie-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.movie-title {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #fff;
+}
+
+.wishlist-indicator {
+    margin-top: 5px;
+    font-size: 20px;
+}
+
+/* 로딩 영역 */
+.loading-trigger {
+    text-align: center;
+    margin-top: 20px;
+    height: 50px;
+}
+
+.loading-indicator {
+    color: white;
+    font-size: 16px;
+}
+
+/* Top 버튼 */
+.top-button {
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    padding: 10px 15px;
+    background-color: #e50914;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}

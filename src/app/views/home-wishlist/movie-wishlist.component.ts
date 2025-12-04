@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {WishlistService} from '../../util/movie/wishlist';
-import {Movie} from '../../../models/types';
+import { WishlistService } from '../../util/movie/wishlist';
+import { Movie } from '../../../models/types';
 
 @Component({
   selector: 'app-movie-wishlist',
@@ -11,15 +11,17 @@ import {Movie} from '../../../models/types';
   styleUrls: ['./movie-wishlist.component.css']
 })
 export class MovieWishlistComponent implements OnInit, OnDestroy {
+
   @ViewChild('gridContainer') gridContainer!: ElementRef;
 
-  rowSize: number = 4;
-  moviesPerPage: number = 20;
-  currentPage: number = 1;
-  isMobile: boolean = window.innerWidth <= 768;
-  currentView: string = 'grid';
   wishlistMovies: Movie[] = [];
   visibleWishlistMovies: Movie[][] = [];
+
+  rowSize = 4;
+  moviesPerPage = 20;
+  currentPage = 1;
+  isMobile = window.innerWidth <= 768;
+  currentView = 'grid';
 
   private resizeObserver: ResizeObserver;
 
@@ -31,29 +33,26 @@ export class MovieWishlistComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.loadWishlist();
+    // ⭐⭐ 핵심: wishlistService 데이터 구독
+    this.wishlistService.wishlist$.subscribe(list => {
+      this.wishlistMovies = list;
+      this.updateVisibleMovies();
+      this.cdr.detectChanges();
+    });
+
     this.handleResize();
     window.addEventListener('resize', this.handleResize.bind(this));
 
-    if (this.gridContainer) {
-      this.resizeObserver.observe(this.gridContainer.nativeElement);
-    }
+    setTimeout(() => {
+      if (this.gridContainer) {
+        this.resizeObserver.observe(this.gridContainer.nativeElement);
+      }
+    });
   }
 
   ngOnDestroy() {
     window.removeEventListener('resize', this.handleResize.bind(this));
-    if (this.gridContainer) {
-      this.resizeObserver.unobserve(this.gridContainer.nativeElement);
-    }
     this.resizeObserver.disconnect();
-  }
-
-  loadWishlist() {
-    this.wishlistService.wishlist$.subscribe(movies => {
-      this.wishlistMovies = movies;
-      this.updateVisibleMovies();
-      this.cdr.detectChanges();
-    });
   }
 
   getImageUrl(path: string): string {
@@ -61,22 +60,22 @@ export class MovieWishlistComponent implements OnInit, OnDestroy {
   }
 
   calculateLayout() {
-    if (this.gridContainer) {
-      const container = this.gridContainer.nativeElement;
-      const containerWidth = container.offsetWidth;
-      const containerHeight = window.innerHeight - container.offsetTop;
-      const movieCardWidth = this.isMobile ? 90 : 220;
-      const movieCardHeight = this.isMobile ? 150 : 330;
-      const horizontalGap = this.isMobile ? 10 : 15;
-      const verticalGap = -10;
+    if (!this.gridContainer) return;
 
-      this.rowSize = Math.floor(containerWidth / (movieCardWidth + horizontalGap));
-      const maxRows = Math.floor(containerHeight / (movieCardHeight + verticalGap));
-      this.moviesPerPage = this.rowSize * maxRows;
+    const container = this.gridContainer.nativeElement;
+    const containerWidth = container.offsetWidth;
+    const containerHeight = window.innerHeight - container.offsetTop;
 
-      this.updateVisibleMovies();
-      this.cdr.detectChanges();
-    }
+    const movieCardWidth = this.isMobile ? 90 : 220;
+    const movieCardHeight = this.isMobile ? 150 : 330;
+    const horizontalGap = this.isMobile ? 10 : 15;
+    const verticalGap = -10;
+
+    this.rowSize = Math.floor(containerWidth / (movieCardWidth + horizontalGap));
+    const maxRows = Math.floor(containerHeight / (movieCardHeight + verticalGap));
+    this.moviesPerPage = this.rowSize * maxRows;
+
+    this.updateVisibleMovies();
   }
 
   updateVisibleMovies() {
@@ -84,17 +83,15 @@ export class MovieWishlistComponent implements OnInit, OnDestroy {
     const endIndex = startIndex + this.moviesPerPage;
     const paginatedMovies = this.wishlistMovies.slice(startIndex, endIndex);
 
-    this.visibleWishlistMovies = paginatedMovies.reduce((resultArray: Movie[][], item, index) => {
+    this.visibleWishlistMovies = paginatedMovies.reduce((acc: Movie[][], movie, index) => {
       const groupIndex = Math.floor(index / this.rowSize);
-      if (!resultArray[groupIndex]) {
-        resultArray[groupIndex] = [];
-      }
-      resultArray[groupIndex].push(item);
-      return resultArray;
+      if (!acc[groupIndex]) acc[groupIndex] = [];
+      acc[groupIndex].push(movie);
+      return acc;
     }, []);
   }
 
-  get totalPages(): number {
+  get totalPages() {
     return Math.ceil(this.wishlistMovies.length / this.moviesPerPage);
   }
 
