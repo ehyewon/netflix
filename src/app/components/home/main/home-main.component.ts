@@ -14,12 +14,10 @@ import { MovieRowComponent } from '../../../views/home-main/movie-row.component'
     MovieRowComponent
   ]
 })
-
 export class HomeMainComponent implements OnInit, OnDestroy {
   faSearch = faSearch;
   faUser = faUser;
 
-  apiKey: string = localStorage.getItem('TMDb-Key') || 'b4303f4fca2d461848894c447fbf6a72';
   featuredMovie: any = null;
   popularMoviesUrl: string = '';
   newReleasesUrl: string = '';
@@ -27,15 +25,14 @@ export class HomeMainComponent implements OnInit, OnDestroy {
 
   private scrollListener: any;
 
-  constructor(
-    private urlService: URLService
-  ) {
-    this.popularMoviesUrl = urlService.getURL4PopularMovies(this.apiKey);
-    this.newReleasesUrl = urlService.getURL4ReleaseMovies(this.apiKey);
-    this.actionMoviesUrl = urlService.getURL4GenreMovies(this.apiKey, '28');
-  }
+  constructor(private urlService: URLService) { }
 
   ngOnInit() {
+    // URL 생성은 환경변수 기반 URLService가 처리
+    this.popularMoviesUrl = this.urlService.getURL4PopularMovies();
+    this.newReleasesUrl = this.urlService.getURL4ReleaseMovies();
+    this.actionMoviesUrl = this.urlService.getURL4GenreMovies('28');
+
     this.loadFeaturedMovie();
     this.initializeScrollListener();
   }
@@ -45,7 +42,11 @@ export class HomeMainComponent implements OnInit, OnDestroy {
   }
 
   private async loadFeaturedMovie() {
-    this.featuredMovie = await this.urlService.fetchFeaturedMovie(this.apiKey);
+    this.featuredMovie = await this.urlService.fetchFeaturedMovie();
+
+    if (!this.featuredMovie) {
+      console.warn("배너 영화 로드 실패");
+    }
   }
 
   private initializeScrollListener() {

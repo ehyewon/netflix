@@ -1,0 +1,6 @@
+export const environment = {
+    production: true,
+    TMDB_KEY: "b4303f4fca2d461848894c447fbf6a72",
+    TMDB_V4_TOKEN: "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiNDMwM2Y0ZmNhMmQ0NjE4NDg4OTRjNDQ3ZmJmNmE3MiIsIm5iZiI6MTc2NDc4MDA0Mi4xMDQsInN1YiI6IjY5MzA2ODBhMTM0Y2IzNmI0YmEzZGQ3ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.e0lA0IrMLLphpF0fMj6xdrzzfq6D7krB2JNJiSrAmKk"
+
+};
