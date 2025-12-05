@@ -8,7 +8,7 @@
             <h1>로그인</h1>
             <div class="input" [ngClass]="{'active': isEmailFocused || email}"> <input id="email" type="email"
                 [(ngModel)]="email" name="email" (focus)="focusInput('email')" (blur)="blurInput('email')"> <label
-                for="email">Username or Email</label> </div>
+                for="email">이메일</label> </div>
             <div class="input" [ngClass]="{'active': isPasswordFocused || password}"> <input id="password"
                 type="password" [(ngModel)]="password" name="password" (focus)="focusInput('password')"
                 (blur)="blurInput('password')"> <label for="password">비밀번호</label> </div> <span
