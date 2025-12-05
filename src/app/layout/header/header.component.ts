@@ -4,6 +4,8 @@ import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontaweso
 import { faSearch, faUser, faTicket, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../util/auth/auth.service';
+import { WishlistService } from '../../util/movie/wishlist';
+
 
 @Component({
   selector: 'app-header',
@@ -22,6 +24,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private authService: AuthService,
+    private wishlistService: WishlistService,
     library: FaIconLibrary
   ) {
     library.addIcons(faSearch, faUser, faTicket, faBars, faTimes);
@@ -52,6 +55,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   logout() {
     this.authService.logout();
     this.currentUser = null;
+    this.wishlistService.refreshAfterLoginOrLogout();
     this.router.navigate(['/signin']);
   }
 

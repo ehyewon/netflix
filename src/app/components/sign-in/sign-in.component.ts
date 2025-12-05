@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../util/auth/auth.service';
+import { WishlistService } from '../../util/movie/wishlist';
+
 
 @Component({
     selector: 'app-sign-in',
@@ -33,7 +35,8 @@ export class SignInComponent implements OnInit, OnDestroy {
 
     constructor(
         private authService: AuthService,
-        private router: Router
+        private router: Router,
+        private wishlistService: WishlistService   // ⭐ 추가!!
     ) { }
 
     ngOnInit() {
@@ -110,6 +113,7 @@ export class SignInComponent implements OnInit, OnDestroy {
     handleLogin() {
         this.authService.tryLogin(this.email, this.password).subscribe({
             next: () => {
+                this.wishlistService.refreshAfterLoginOrLogout(); // ⭐ 필수
                 this.router.navigate(['/']);
             },
             error: () => {
