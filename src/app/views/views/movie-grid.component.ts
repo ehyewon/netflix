@@ -1,8 +1,8 @@
 import { Component, Input, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import axios from 'axios';
-import {Movie} from '../../../models/types';
-import {WishlistService} from '../../util/movie/wishlist';
+import { Movie } from '../../../models/types';
+import { WishlistService } from '../../util/movie/wishlist';
 
 @Component({
   selector: 'app-movie-grid',
@@ -125,7 +125,7 @@ export class MovieGridComponent implements OnInit, OnDestroy {
     }
     this.wishlistTimer = window.setTimeout(() => {
       this.wishlistService.toggleWishlist(movie);
-    }, 2000);
+    }, 0);
   }
 
   isInWishlist(movieId: number): boolean {

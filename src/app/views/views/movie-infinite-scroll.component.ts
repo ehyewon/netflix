@@ -1,5 +1,5 @@
 // src/app/models/types.ts
-import {WishlistService} from '../../util/movie/wishlist';
+import { WishlistService } from '../../util/movie/wishlist';
 
 export interface Movie {
   id: number;
@@ -195,7 +195,7 @@ export class MovieInfiniteScrollComponent implements OnInit, OnDestroy {
     }
     this.wishlistTimer = window.setTimeout(() => {
       this.wishlistService.toggleWishlist(movie);
-    }, 800);
+    }, 0);
   }
 
   isInWishlist(movieId: number): boolean {
