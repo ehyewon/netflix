@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, ElementRef, HostListener, OnDestroy} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -11,9 +11,10 @@ import { AuthService } from '../../util/auth/auth.service';
   standalone: true,
   imports: [FormsModule, CommonModule]
 })
-
 export class SignInComponent implements OnInit, OnDestroy {
+
   isLoginVisible = true;
+
   email = '';
   password = '';
   registerEmail = '';
@@ -21,6 +22,7 @@ export class SignInComponent implements OnInit, OnDestroy {
   confirmPassword = '';
   rememberMe = false;
   acceptTerms = false;
+
   isEmailFocused = false;
   isPasswordFocused = false;
   isRegisterEmailFocused = false;
@@ -30,15 +32,16 @@ export class SignInComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
-    // onMounted 로직을 여기에 구현
+    // ⭐ 자동 로그인
+    if (this.authService.autoLogin()) {
+      this.router.navigate(['/']);
+    }
   }
 
-  ngOnDestroy() {
-    // onUnmounted 로직을 여기에 구현
-  }
+  ngOnDestroy() { }
 
   get isLoginFormValid(): boolean {
     return !!this.email && !!this.password;
@@ -60,40 +63,29 @@ export class SignInComponent implements OnInit, OnDestroy {
     }, 50);
   }
 
-  focusInput(inputName: string) {
-    switch(inputName) {
-      case 'email': this.isEmailFocused = true; break;
-      case 'password': this.isPasswordFocused = true; break;
-      case 'registerEmail': this.isRegisterEmailFocused = true; break;
-      case 'registerPassword': this.isRegisterPasswordFocused = true; break;
-      case 'confirmPassword': this.isConfirmPasswordFocused = true; break;
-    }
+  focusInput(name: string) {
+    (this as any)[`is${name.charAt(0).toUpperCase() + name.slice(1)}Focused`] = true;
   }
 
-  blurInput(inputName: string) {
-    switch(inputName) {
-      case 'email': this.isEmailFocused = false; break;
-      case 'password': this.isPasswordFocused = false; break;
-      case 'registerEmail': this.isRegisterEmailFocused = false; break;
-      case 'registerPassword': this.isRegisterPasswordFocused = false; break;
-      case 'confirmPassword': this.isConfirmPasswordFocused = false; break;
-    }
+  blurInput(name: string) {
+    (this as any)[`is${name.charAt(0).toUpperCase() + name.slice(1)}Focused`] = false;
   }
 
+  // ⭐ 로그인
   handleLogin() {
-    this.authService.tryLogin(this.email, this.password).subscribe({
+    this.authService.tryLogin(this.email, this.password, this.rememberMe).subscribe({
       next: (user) => {
         this.router.navigate(['/']);
       },
-      error: (error) => {
-        alert('Login failed');
-      }
+      error: () => alert('Login failed')
     });
   }
 
+  // ⭐ 회원가입
   handleRegister() {
     this.authService.tryRegister(this.registerEmail, this.registerPassword).subscribe({
       next: () => {
+        alert('Registered successfully!');
         this.toggleCard();
       },
       error: (err) => {
