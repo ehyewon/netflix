@@ -5,92 +5,128 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../util/auth/auth.service';
 
 @Component({
-  selector: 'app-sign-in',
-  templateUrl: './sign-in.component.html',
-  styleUrls: ['./sign-in.component.css'],
-  standalone: true,
-  imports: [FormsModule, CommonModule]
+    selector: 'app-sign-in',
+    templateUrl: './sign-in.component.html',
+    styleUrls: ['./sign-in.component.css'],
+    standalone: true,
+    imports: [FormsModule, CommonModule]
 })
 export class SignInComponent implements OnInit, OnDestroy {
 
-  isLoginVisible = true;
+    isLoginVisible = true;
 
-  email = '';
-  password = '';
-  registerEmail = '';
-  registerPassword = '';
-  confirmPassword = '';
-  rememberMe = false;
-  acceptTerms = false;
+    email = '';
+    password = '';
 
-  isEmailFocused = false;
-  isPasswordFocused = false;
-  isRegisterEmailFocused = false;
-  isRegisterPasswordFocused = false;
-  isConfirmPasswordFocused = false;
+    registerEmail = '';
+    registerPassword = '';
+    confirmPassword = '';
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) { }
+    rememberMe = false;
+    acceptTerms = false;
 
-  ngOnInit() {
-    // ⭐ 자동 로그인
-    if (this.authService.autoLogin()) {
-      this.router.navigate(['/']);
+    isEmailFocused = false;
+    isPasswordFocused = false;
+    isRegisterEmailFocused = false;
+    isRegisterPasswordFocused = false;
+    isConfirmPasswordFocused = false;
+
+    constructor(
+        private authService: AuthService,
+        private router: Router
+    ) { }
+
+    ngOnInit() {
+        // onMounted 로직을 여기에 구현
     }
-  }
 
-  ngOnDestroy() { }
+    ngOnDestroy() {
+        // onUnmounted 로직을 여기에 구현
+    }
 
-  get isLoginFormValid(): boolean {
-    return !!this.email && !!this.password;
-  }
+    get isLoginFormValid(): boolean {
+        return !!this.email && !!this.password;
+    }
 
-  get isRegisterFormValid(): boolean {
-    return !!this.registerEmail &&
-      !!this.registerPassword &&
-      !!this.confirmPassword &&
-      this.registerPassword === this.confirmPassword &&
-      this.acceptTerms;
-  }
+    get isRegisterFormValid(): boolean {
+        return (
+            !!this.registerEmail &&
+            !!this.registerPassword &&
+            !!this.confirmPassword &&
+            this.registerPassword === this.confirmPassword &&
+            this.acceptTerms
+        );
+    }
 
-  toggleCard() {
-    this.isLoginVisible = !this.isLoginVisible;
-    setTimeout(() => {
-      document.getElementById('register')?.classList.toggle('register-swap');
-      document.getElementById('login')?.classList.toggle('login-swap');
-    }, 50);
-  }
+    toggleCard() {
+        this.isLoginVisible = !this.isLoginVisible;
 
-  focusInput(name: string) {
-    (this as any)[`is${name.charAt(0).toUpperCase() + name.slice(1)}Focused`] = true;
-  }
+        setTimeout(() => {
+            document.getElementById('register')?.classList.toggle('register-swap');
+            document.getElementById('login')?.classList.toggle('login-swap');
+        }, 50);
+    }
 
-  blurInput(name: string) {
-    (this as any)[`is${name.charAt(0).toUpperCase() + name.slice(1)}Focused`] = false;
-  }
+    focusInput(inputName: string) {
+        switch (inputName) {
+            case 'email':
+                this.isEmailFocused = true;
+                break;
+            case 'password':
+                this.isPasswordFocused = true;
+                break;
+            case 'registerEmail':
+                this.isRegisterEmailFocused = true;
+                break;
+            case 'registerPassword':
+                this.isRegisterPasswordFocused = true;
+                break;
+            case 'confirmPassword':
+                this.isConfirmPasswordFocused = true;
+                break;
+        }
+    }
 
-  // ⭐ 로그인
-  handleLogin() {
-    this.authService.tryLogin(this.email, this.password, this.rememberMe).subscribe({
-      next: (user) => {
-        this.router.navigate(['/']);
-      },
-      error: () => alert('Login failed')
-    });
-  }
+    blurInput(inputName: string) {
+        switch (inputName) {
+            case 'email':
+                this.isEmailFocused = false;
+                break;
+            case 'password':
+                this.isPasswordFocused = false;
+                break;
+            case 'registerEmail':
+                this.isRegisterEmailFocused = false;
+                break;
+            case 'registerPassword':
+                this.isRegisterPasswordFocused = false;
+                break;
+            case 'confirmPassword':
+                this.isConfirmPasswordFocused = false;
+                break;
+        }
+    }
 
-  // ⭐ 회원가입
-  handleRegister() {
-    this.authService.tryRegister(this.registerEmail, this.registerPassword).subscribe({
-      next: () => {
-        alert('Registered successfully!');
-        this.toggleCard();
-      },
-      error: (err) => {
-        alert(err.message);
-      }
-    });
-  }
+    handleLogin() {
+        this.authService.tryLogin(this.email, this.password).subscribe({
+            next: () => {
+                this.router.navigate(['/']);
+            },
+            error: () => {
+                alert('틀렸습니다.아이디 또는 비밀번호를 확인해주세요.');
+            }
+        });
+    }
+
+    handleRegister() {
+        this.authService.tryRegister(this.registerEmail, this.registerPassword).subscribe({
+            next: () => {
+                alert('회원가입에 성공하셨습니다!');
+                this.toggleCard();
+            },
+            error: (err) => {
+                alert(err.message);
+            }
+        });
+    }
 }
