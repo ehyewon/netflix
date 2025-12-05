@@ -1,5 +1,5 @@
 // src/app/models/types.ts
-import {WishlistService} from '../../util/movie/wishlist';
+import { WishlistService } from '../../util/movie/wishlist';
 
 export interface Movie {
   id: number;
