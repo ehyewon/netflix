@@ -52,13 +52,10 @@ export class SignInComponent implements OnInit, OnDestroy {
     }
 
     get isRegisterFormValid(): boolean {
-        return (
-            !!this.registerEmail &&
+        return !!this.registerEmail &&
             !!this.registerPassword &&
             !!this.confirmPassword &&
-            this.registerPassword === this.confirmPassword &&
-            this.acceptTerms
-        );
+            this.acceptTerms; // ⭐ 일치 조건 제거
     }
 
     toggleCard() {
@@ -111,26 +108,56 @@ export class SignInComponent implements OnInit, OnDestroy {
     }
 
     handleLogin() {
+        if (!this.isValidEmail(this.email)) {
+            alert("올바른 이메일 형식을 입력해주세요.");
+            return;
+        }
+
         this.authService.tryLogin(this.email, this.password).subscribe({
             next: () => {
-                this.wishlistService.refreshAfterLoginOrLogout(); // ⭐ 필수
+                this.wishlistService.refreshAfterLoginOrLogout();
                 this.router.navigate(['/']);
             },
-            error: () => {
-                alert('틀렸습니다.아이디 또는 비밀번호를 확인해주세요.');
-            }
+            error: () => alert('로그인 실패: 이메일 또는 비밀번호를 확인해주세요')
         });
     }
 
+
     handleRegister() {
+
+        // 1. 이메일 형식 체크
+        if (!this.isValidEmail(this.registerEmail)) {
+            alert("올바른 이메일 형식을 입력해주세요.");
+            return;
+        }
+
+        // 2. 비밀번호 입력 여부 체크
+        if (!this.registerPassword || !this.confirmPassword) {
+            alert("비밀번호를 모두 입력해주세요.");
+            return;
+        }
+
+        // 3. 비밀번호 일치 여부 체크
+        if (this.registerPassword !== this.confirmPassword) {
+            alert("비밀번호가 일치하지 않습니다.");
+            return;
+        }
+
+        // 4. 회원가입 진행
         this.authService.tryRegister(this.registerEmail, this.registerPassword).subscribe({
             next: () => {
-                alert('회원가입에 성공하셨습니다!');
+                alert("회원가입에 성공했습니다!");
                 this.toggleCard();
             },
-            error: (err) => {
-                alert(err.message);
-            }
+            error: (err) => alert(err.message)
         });
     }
+
+
+
+    private isValidEmail(email: string): boolean {
+        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return pattern.test(email);
+    }
+
 }
