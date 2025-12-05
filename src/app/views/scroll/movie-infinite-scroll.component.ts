@@ -223,7 +223,7 @@ export class MovieInfiniteScrollComponent
         if (this.wishlistTimer) clearTimeout(this.wishlistTimer);
         this.wishlistTimer = window.setTimeout(
             () => this.wishlistService.toggleWishlist(movie),
-            800
+            0
         );
     }
 
