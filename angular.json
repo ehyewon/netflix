@@ -29,22 +29,22 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [],
-            "budgets": [
-              {
-                "type": "initial",
-                "maximumWarning": "500kB",
-                "maximumError": "1MB"
-              },
-              {
-                "type": "anyComponentStyle",
-                "maximumWarning": "200kB",
-                "maximumError": "300kB"
-              }
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "10kB",
+                  "maximumError": "20kB"
+                }
+              ],
               "outputHashing": "all"
             },
             "development": {
