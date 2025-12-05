@@ -1,28 +1,41 @@
 <div id="container">
   <header class="app-header" [ngClass]="{ 'scrolled': isScrolled }">
+
     <div class="header-left">
       <div class="logo">
         <a routerLink="/">
           <fa-icon [icon]="['fas', 'ticket']" style="height: 100%; color: #E50914;"></fa-icon>
         </a>
       </div>
+
       <nav class="nav-links desktop-nav">
         <ul>
           <li><a routerLink="/">홈</a></li>
-          <li><a routerLink="/popular">대세 콘텐츠</a></li>
+          <li><a routerLink="/popular">인기 콘텐츠</a></li>
           <li><a routerLink="/wishlist">내가 찜한 리스트</a></li>
           <li><a routerLink="/search">찾아보기</a></li>
         </ul>
       </nav>
     </div>
+
     <div class="header-right">
-      <button class="icon-button" (click)="removeKey()">
+
+      <!-- 로그인 X: 프로필 아이콘만 보임 -->
+      <button *ngIf="!currentUser" class="icon-button" (click)="onProfileClick()">
         <fa-icon [icon]="['fas', 'user']"></fa-icon>
       </button>
+
+      <!-- 로그인 O: 이름 + 로그아웃 버튼 -->
+      <div *ngIf="currentUser" class="user-info">
+        <span>{{ currentUser.id }}님, 환영합니다!</span>
+        <button class="logout-button" (click)="logout()">로그아웃</button>
+      </div>
+
       <button class="icon-button mobile-menu-button" (click)="toggleMobileMenu()">
         <fa-icon [icon]="['fas', 'bars']"></fa-icon>
       </button>
     </div>
+
   </header>
 
   <!-- Mobile Navigation -->
@@ -30,6 +43,7 @@
     <button class="close-button" (click)="toggleMobileMenu()">
       <fa-icon [icon]="['fas', 'times']"></fa-icon>
     </button>
+
     <nav>
       <ul>
         <li><a routerLink="/" (click)="toggleMobileMenu()">홈</a></li>

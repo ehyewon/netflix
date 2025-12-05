@@ -37,26 +37,29 @@ export class MovieInfiniteScrollComponent
     rowSize = 4;
     isLoading = false;
     isMobile = window.innerWidth <= 768;
-    currentView = 'grid';
     hasMore = true;
+
+    // ⭐ Top 버튼 여부
     showTopButton = false;
+
     private wishlistTimer: number | null = null;
     private observer!: IntersectionObserver;
     private readonly resizeListener: () => void;
-    private readonly scrollListener: () => void;
+
+    // ⭐ 스크롤 감지 리스너 (window ❌ → gridContainer 내부 div ⭕)
+    private readonly scrollListener: any;
 
     constructor(private wishlistService: WishlistService) {
         this.resizeListener = this.handleResize.bind(this);
         this.scrollListener = this.handleScroll.bind(this);
     }
 
-    // ⭐⭐⭐ 장르/언어/평점 변경 감지 → 영화 목록 초기화 후 재검색 ⭐⭐⭐
     ngOnChanges(changes: SimpleChanges): void {
         if (
             (changes['genreCode'] && !changes['genreCode'].firstChange) ||
             (changes['sortingOrder'] && !changes['sortingOrder'].firstChange) ||
             (changes['voteEverage'] && !changes['voteEverage'].firstChange) ||
-            (changes['keyword'] && !changes['keyword'].firstChange)   // ⭐ 추가됨
+            (changes['keyword'] && !changes['keyword'].firstChange)
         ) {
             this.resetMovies();
         }
@@ -66,47 +69,59 @@ export class MovieInfiniteScrollComponent
         this.setupIntersectionObserver();
         this.fetchMovies();
         this.handleResize();
-
-        window.addEventListener('resize', this.resizeListener);
         window.addEventListener('scroll', this.scrollListener);
+        window.addEventListener('resize', this.resizeListener);
+    }
+
+    ngAfterViewInit(): void {
+        // ⭐ movie-grid 내부 스크롤을 감지해야 Top 버튼이 동작함
+        this.gridContainer.nativeElement.addEventListener('scroll', this.scrollListener);
     }
 
     ngOnDestroy(): void {
-        window.removeEventListener('resize', this.resizeListener);
         window.removeEventListener('scroll', this.scrollListener);
 
-        if (this.observer) {
-            this.observer.disconnect();
+        // ⭐ div 스크롤 제거
+        if (this.gridContainer) {
+            this.gridContainer.nativeElement.removeEventListener('scroll', this.scrollListener);
         }
-        if (this.wishlistTimer) {
-            clearTimeout(this.wishlistTimer);
-        }
+
+        if (this.observer) this.observer.disconnect();
+        if (this.wishlistTimer) clearTimeout(this.wishlistTimer);
     }
 
     private setupIntersectionObserver(): void {
+        if (this.observer) this.observer.disconnect();
+
         this.observer = new IntersectionObserver(
             (entries) => {
-                if (entries[0].isIntersecting && !this.isLoading && this.hasMore) {
-                    this.fetchMovies();
+                const entry = entries[0];
+
+                if (entry.isIntersecting && !this.isLoading) {
+                    if (this.hasMore) {
+                        this.fetchMovies();
+                    } else {
+                        this.isLoading = true;
+                        setTimeout(() => this.isLoading = false, 1000);
+                    }
                 }
             },
-            { rootMargin: '100px', threshold: 0.1 }
+            { root: null, rootMargin: '300px', threshold: 0.0 }
         );
 
         setTimeout(() => {
-            if (this.loadingTrigger) {
+            if (this.loadingTrigger?.nativeElement) {
                 this.observer.observe(this.loadingTrigger.nativeElement);
             }
-        }, 0);
+        }, 300);
     }
 
-    // ⭐⭐⭐ 필터링된 API 호출 ⭐⭐⭐
     async fetchMovies(): Promise<void> {
         if (this.isLoading || !this.hasMore) return;
 
         this.isLoading = true;
+
         try {
-            // 🔥 검색어가 있을 경우 → 검색 API 사용
             const url = this.keyword.trim()
                 ? 'https://api.themoviedb.org/3/search/movie'
                 : (this.genreCode === '0'
@@ -119,40 +134,32 @@ export class MovieInfiniteScrollComponent
                 page: this.currentPage
             };
 
-            // 🔍 검색어 우선 적용
-            if (this.keyword.trim()) {
-                params.query = this.keyword;
-            }
-            // 🔍 검색어 없으면 장르 적용
-            else if (this.genreCode !== '0') {
-                params.with_genres = this.genreCode;
-            }
+            if (this.keyword.trim()) params.query = this.keyword;
+            else if (this.genreCode !== '0') params.with_genres = this.genreCode;
 
             const response: AxiosResponse<any> = await axios.get(url, { params });
             const newMovies = response.data.results;
 
             if (newMovies.length > 0) {
-
                 let movieArray = [...this.movies, ...newMovies];
 
-                // ⭐ 언어 필터
                 if (this.sortingOrder !== 'all') {
-                    movieArray = movieArray.filter((movie) =>
-                        movie.original_language === this.sortingOrder
+                    movieArray = movieArray.filter(
+                        (m) => m.original_language === this.sortingOrder
                     );
                 }
 
-                // ⭐ 평점 필터
-                movieArray = movieArray.filter((movie) => {
+                movieArray = movieArray.filter((m) => {
                     if (this.voteEverage === -1) return true;
-                    if (this.voteEverage === -2) return movie.vote_average <= 4;
-                    return movie.vote_average >= this.voteEverage &&
-                        movie.vote_average < this.voteEverage + 1;
+                    if (this.voteEverage === -2) return m.vote_average <= 4;
+                    return (
+                        m.vote_average >= this.voteEverage &&
+                        m.vote_average < this.voteEverage + 1
+                    );
                 });
 
                 this.movies = movieArray;
                 this.currentPage++;
-
             } else {
                 this.hasMore = false;
             }
@@ -164,7 +171,6 @@ export class MovieInfiniteScrollComponent
         }
     }
 
-    // ⭐⭐⭐ 필터 변경 시 전체 초기화 ⭐⭐⭐
     private resetMovies(): void {
         this.movies = [];
         this.currentPage = 1;
@@ -173,36 +179,44 @@ export class MovieInfiniteScrollComponent
     }
 
     getImageUrl(path: string): string {
-        return path ? `https://image.tmdb.org/t/p/w300${path}` : '/placeholder-image.jpg';
+        return path
+            ? `https://image.tmdb.org/t/p/w300${path}`
+            : '/placeholder-image.jpg';
     }
 
     get visibleMovieGroups(): Movie[][] {
-        return this.movies.reduce<Movie[][]>((resultArray, item, index) => {
+        return this.movies.reduce<Movie[][]>((result, item, index) => {
             const groupIndex = Math.floor(index / this.rowSize);
-            if (!resultArray[groupIndex]) resultArray[groupIndex] = [];
-            resultArray[groupIndex].push(item);
-            return resultArray;
+            if (!result[groupIndex]) result[groupIndex] = [];
+            result[groupIndex].push(item);
+            return result;
         }, []);
     }
 
     private handleResize(): void {
         this.isMobile = window.innerWidth <= 768;
+
         if (this.gridContainer) {
             const containerWidth = this.gridContainer.nativeElement.offsetWidth;
             const movieCardWidth = this.isMobile ? 100 : 300;
-            const horizontalGap = this.isMobile ? 10 : 15;
-            this.rowSize = Math.floor(containerWidth / (movieCardWidth + horizontalGap));
+            const gap = this.isMobile ? 10 : 15;
+            this.rowSize = Math.floor(containerWidth / (movieCardWidth + gap));
         }
     }
 
+    // ⭐⭐ Top 버튼 표시 — window가 아니라 gridContainer 스크롤 기준
     private handleScroll(): void {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        this.showTopButton = scrollTop > 300;
+        this.showTopButton = scrollTop > 200;
     }
 
-    scrollToTopAndReset(): void {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        this.resetMovies();
+
+    // ⭐⭐ Top 버튼 눌렀을 때 movie-grid를 맨 위로 스크롤
+    scrollToTop(): void {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
     }
 
     toggleWishlist(movie: Movie): void {
@@ -215,7 +229,4 @@ export class MovieInfiniteScrollComponent
     isInWishlist(movieId: number): boolean {
         return this.wishlistService.isInWishlist(movieId);
     }
-
-
 }
-

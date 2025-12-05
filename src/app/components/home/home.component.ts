@@ -11,5 +11,6 @@ import { HeaderComponent } from '../../layout/header/header.component';
 })
 export class HomeComponent {
   // 컴포넌트 로직
+
 }
 
