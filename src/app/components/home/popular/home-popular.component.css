@@ -1,3 +1,6 @@
+/* =============================
+    📌 VIEW TOGGLE (grid / list 버튼)
+============================= */
 .view-toggle {
   display: flex;
   justify-content: flex-end;
@@ -24,6 +27,9 @@
   }
 }
 
+/* =============================
+    📌 TOP BUTTON (맨 위로 버튼)
+============================= */
 .top-button {
   position: fixed;
   bottom: 40px;
@@ -33,11 +39,8 @@
   backdrop-filter: blur(6px);
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 18px;
-  /* 둥근 정도 ↑ */
   padding: 16px 24px;
-  /* 가로·세로 ↑ */
   font-size: 18px;
-  /* 글씨 ↑ */
   letter-spacing: 0.5px;
   cursor: pointer;
   transition: 0.25s ease;
@@ -48,4 +51,82 @@
 .top-button:hover {
   background: rgba(255, 255, 255, 0.25);
   transform: translateY(-3px);
+}
+
+/* 모바일에서 위치 조정 */
+@media (max-width: 768px) {
+  .top-button {
+    right: 20px;
+    bottom: 30px;
+    padding: 14px 20px;
+    font-size: 16px;
+  }
+}
+
+/* =============================
+    📌 GRID MODE (카드형)
+============================= */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+/* 태블릿 */
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 모바일 */
+@media (max-width: 480px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================
+    📌 LIST MODE (세로 목록형)
+============================= */
+.list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.list-item {
+  display: flex;
+  gap: 1rem;
+  background: #333;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.list-item img {
+  width: 140px;
+  border-radius: 6px;
+}
+
+/* 모바일에서 리스트 UI 깨지지 않도록 */
+@media (max-width: 600px) {
+  .list-item {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+
+  .list-item img {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+/* =============================
+    📌 스크롤 최상단 레이아웃 조정
+============================= */
+.container {
+  padding-top: 20px;
 }

@@ -1,3 +1,6 @@
+/* =============================
+   🔥 전체 상세 페이지 컨테이너
+============================= */
 .detail-container {
     position: relative;
     color: white;
@@ -6,7 +9,9 @@
     overflow: hidden;
 }
 
-/* 🔥 영화 배경 이미지 */
+/* =============================
+   🔥 배경 블러 이미지
+============================= */
 .detail-backdrop {
     position: absolute;
     inset: 0;
@@ -22,7 +27,9 @@
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.95));
 }
 
-/* 🔥 컨텐츠 */
+/* =============================
+   🔥 컨텐츠 영역
+============================= */
 .detail-content {
     position: relative;
     display: flex;
@@ -31,14 +38,23 @@
     z-index: 2;
 }
 
-/* 포스터 */
+/* =============================
+   🔥 포스터
+============================= */
 .poster-section img {
     width: 330px;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transition: transform 0.25s ease;
 }
 
-/* 정보 */
+.poster-section img:hover {
+    transform: scale(1.03);
+}
+
+/* =============================
+   🔥 정보 섹션
+============================= */
 .info-section {
     max-width: 650px;
 }
@@ -69,7 +85,9 @@
     opacity: 0.8;
 }
 
-/* 장르 */
+/* =============================
+   🔥 장르 태그
+============================= */
 .genre-list {
     margin-bottom: 30px;
 }
@@ -81,13 +99,17 @@
     margin-right: 8px;
     border-radius: 20px;
     font-size: 14px;
+    white-space: nowrap;
 }
 
-/* 버튼 스타일 */
+/* =============================
+   🔥 버튼
+============================= */
 .actions {
     display: flex;
     gap: 15px;
     margin-top: 20px;
+    flex-wrap: wrap;
 }
 
 .play-btn {
@@ -119,15 +141,101 @@
     background-color: rgba(255, 255, 255, 0.35);
 }
 
+/* =============================
+   🔥 반응형 레이아웃
+============================= */
 
-
+/* 기본 레이아웃 */
 .detail-container {
     display: flex;
     gap: 20px;
 }
 
+/* 📱 태블릿 & 모바일 뷰 */
+@media (max-width: 1024px) {
+    .detail-content {
+        padding: 100px 30px 40px;
+        gap: 30px;
+    }
+
+    .poster-section img {
+        width: 280px;
+    }
+
+    .title {
+        font-size: 34px;
+    }
+}
+
+/* 📱 모바일 – 세로 정렬 */
 @media (max-width: 768px) {
-    .detail-container {
+    .detail-content {
         flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 120px 25px 40px;
+    }
+
+    .poster-section img {
+        width: 70%;
+        max-width: 300px;
+    }
+
+    .info-section {
+        max-width: 90%;
+    }
+
+    .title {
+        font-size: 30px;
+    }
+
+    .overview {
+        font-size: 16px;
+    }
+
+    .actions {
+        justify-content: center;
+    }
+}
+
+/* 📱 작은 모바일 */
+@media (max-width: 480px) {
+    .poster-section img {
+        width: 85%;
+    }
+
+    .title {
+        font-size: 26px;
+    }
+
+    .tagline {
+        font-size: 16px;
+    }
+
+    .overview {
+        font-size: 15px;
+    }
+}
+
+/* =============================
+   🔥 가로모드 대응 (모바일 landscape)
+============================= */
+@media (orientation: landscape) and (max-height: 500px) {
+    .detail-content {
+        flex-direction: row;
+        align-items: flex-start;
+        padding-top: 80px;
+    }
+
+    .poster-section img {
+        width: 200px;
+    }
+
+    .title {
+        font-size: 24px;
+    }
+
+    .overview {
+        font-size: 14px;
     }
 }
