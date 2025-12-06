@@ -35,6 +35,12 @@ export class MovieDetailComponent implements OnInit {
     getImage(path: string) {
         return `https://image.tmdb.org/t/p/original${path}`;
     }
+    getPoster(path: string): string {
+        return `https://image.tmdb.org/t/p/w500${path}`;
+    }
 
+    getBackdrop(path: string): string {
+        return `https://image.tmdb.org/t/p/original${path}`;
+    }
 
 }
