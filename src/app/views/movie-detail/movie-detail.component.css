@@ -118,3 +118,16 @@
 .back-btn:hover {
     background-color: rgba(255, 255, 255, 0.35);
 }
+
+
+
+.detail-container {
+    display: flex;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .detail-container {
+        flex-direction: column;
+    }
+}
