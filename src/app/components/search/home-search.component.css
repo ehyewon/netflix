@@ -1,29 +1,151 @@
+/* =============================
+   🔍 검색 전체 컨테이너
+============================= */
 .container-search {
   margin-top: 50px;
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  /* 🔥 모바일 포함 전체 가운데 정렬 */
+  width: 100%;
+  padding: 0 16px;
+  /* 🔥 모바일에서 양쪽 여백 확보 */
 }
 
+/* =============================
+   🔍 검색 바 영역
+============================= */
 .container-search-bar {
   width: 100%;
   position: relative;
   display: flex;
-  justify-content: right;
+  justify-content: center;
+  /* 🔥 flex-end → center로 변경하여 짤림 해결 */
   margin-top: 10px;
 }
 
+/* =============================
+   🔍 검색 결과 컨텐츠
+============================= */
 .content-search {
   width: 100%;
 }
 
 .home-search-wrapper {
   margin-top: -40px;
-  /* 컨테이너 자체를 위로 끌어올리기 */
 }
 
 .movie-grid {
   margin-top: -100px;
-  /* 영화 카드 영역 위쪽 여백 줄이기 */
+}
+
+/* =============================
+   🔥 영화 카드 Grid (반응형)
+============================= */
+.search-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 18px;
+  width: 100%;
+  margin-top: 20px;
+  padding-bottom: 40px;
+}
+
+@media (max-width: 768px) {
+  .search-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+/* =============================
+   🔥 검색 옵션 (필터 드롭다운)
+============================= */
+.search-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 15px 0 25px;
+  width: 100%;
+  justify-content: center;
+  /* 🔥 모바일에서 가운데 정렬 */
+}
+
+.search-filter select {
+  background: #333;
+  color: white;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+/* 태블릿 */
+@media (max-width: 768px) {
+  .search-filter select {
+    width: 45%;
+  }
+}
+
+/* 모바일 */
+@media (max-width: 480px) {
+  .search-filter select {
+    width: 100%;
+    /* 🔥 드롭다운 짤림 해결 */
+    text-align: center;
+  }
+}
+
+/* =============================
+   🔥 검색창 디자인
+============================= */
+.search-input {
+  width: 300px;
+  max-width: 100%;
+  /* 🔥 모바일에서 자동 축소 */
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: #333;
+  color: white;
+  font-size: 15px;
+}
+
+/* 모바일 */
+@media (max-width: 480px) {
+  .search-input {
+    width: 100%;
+  }
+}
+
+/* =============================
+    🔥 모바일전체 보정
+============================= */
+@media (max-width: 768px) {
+  .container-search-bar {
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+}
+
+/* =============================
+   🔥 모바일 가로모드 대응
+============================= */
+@media (orientation: landscape) and (max-height: 500px) {
+  .search-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .search-input {
+    width: 240px;
+  }
 }

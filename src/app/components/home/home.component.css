@@ -1,6 +1,6 @@
 #app {
-  width: 95svw;
-  height: 95svh;
-  overflow-x: hidden;
+  width: min(95svw, 1300px);
   margin: auto;
+  padding-inline: 10px;
+  overflow-x: hidden;
 }

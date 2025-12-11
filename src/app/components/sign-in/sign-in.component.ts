@@ -2,8 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+
 import { AuthService } from '../../util/auth/auth.service';
 import { WishlistService } from '../../util/movie/wishlist';
+import { ToastService } from '../../shared/toast/toast.service';
+import { ToastComponent } from '../../shared/toast/toast.component';
 
 
 @Component({
@@ -11,7 +14,7 @@ import { WishlistService } from '../../util/movie/wishlist';
     templateUrl: './sign-in.component.html',
     styleUrls: ['./sign-in.component.css'],
     standalone: true,
-    imports: [FormsModule, CommonModule]
+    imports: [FormsModule, CommonModule, ToastComponent]
 })
 export class SignInComponent implements OnInit, OnDestroy {
 
@@ -27,6 +30,7 @@ export class SignInComponent implements OnInit, OnDestroy {
     rememberMe = false;
     acceptTerms = false;
 
+    // Input focus states
     isEmailFocused = false;
     isPasswordFocused = false;
     isRegisterEmailFocused = false;
@@ -36,25 +40,19 @@ export class SignInComponent implements OnInit, OnDestroy {
     constructor(
         private authService: AuthService,
         private router: Router,
-        private wishlistService: WishlistService   // ⭐ 추가!!
+        private wishlistService: WishlistService,
+        private toast: ToastService              // ⭐ 토스트 주입
     ) { }
 
-    ngOnInit() {
-        // onMounted 로직을 여기에 구현
-    }
-
-    ngOnDestroy() {
-        // onUnmounted 로직을 여기에 구현
-    }
+    ngOnInit() { }
+    ngOnDestroy() { }
 
     get isLoginFormValid(): boolean {
         return !!this.email && !!this.password;
     }
 
     get isRegisterFormValid(): boolean {
-        return !!this.registerEmail &&
-            !!this.registerPassword &&
-            !!this.confirmPassword;   // ⭐ 약관 조건 제거
+        return !!this.registerEmail && !!this.registerPassword && !!this.confirmPassword;
     }
 
     toggleCard() {
@@ -67,93 +65,60 @@ export class SignInComponent implements OnInit, OnDestroy {
     }
 
     focusInput(inputName: string) {
-        switch (inputName) {
-            case 'email':
-                this.isEmailFocused = true;
-                break;
-            case 'password':
-                this.isPasswordFocused = true;
-                break;
-            case 'registerEmail':
-                this.isRegisterEmailFocused = true;
-                break;
-            case 'registerPassword':
-                this.isRegisterPasswordFocused = true;
-                break;
-            case 'confirmPassword':
-                this.isConfirmPasswordFocused = true;
-                break;
-        }
+        (this as any)[`is${inputName.charAt(0).toUpperCase() + inputName.slice(1)}Focused`] = true;
     }
 
     blurInput(inputName: string) {
-        switch (inputName) {
-            case 'email':
-                this.isEmailFocused = false;
-                break;
-            case 'password':
-                this.isPasswordFocused = false;
-                break;
-            case 'registerEmail':
-                this.isRegisterEmailFocused = false;
-                break;
-            case 'registerPassword':
-                this.isRegisterPasswordFocused = false;
-                break;
-            case 'confirmPassword':
-                this.isConfirmPasswordFocused = false;
-                break;
-        }
+        (this as any)[`is${inputName.charAt(0).toUpperCase() + inputName.slice(1)}Focused`] = false;
     }
 
+    // ---------------- LOGIN ----------------
     handleLogin() {
+
         if (!this.isValidEmail(this.email)) {
-            alert("올바른 이메일 형식을 입력해주세요.");
+            this.toast.show("올바른 이메일 형식을 입력해주세요.", "error");
             return;
         }
 
         this.authService.tryLogin(this.email, this.password).subscribe({
             next: () => {
+                this.toast.show("로그인 성공!", "success");
                 this.wishlistService.refreshAfterLoginOrLogout();
                 this.router.navigate(['/']);
             },
-            error: () => alert('로그인 실패: 이메일 또는 비밀번호를 확인해주세요')
+            error: () => this.toast.show("로그인 실패: 이메일 또는 비밀번호를 확인해주세요", "error")
         });
     }
 
-
+    // ---------------- REGISTER ----------------
     handleRegister() {
-        // 이메일 형식 검사
+
         if (!this.isValidEmail(this.registerEmail)) {
-            alert("올바른 이메일 형식을 입력해주세요.");
+            this.toast.show("올바른 이메일 형식을 입력해주세요.", "error");
             return;
         }
 
-        // 비밀번호 입력 확인
         if (!this.registerPassword || !this.confirmPassword) {
-            alert("비밀번호를 모두 입력해주세요.");
+            this.toast.show("비밀번호를 모두 입력해주세요.", "error");
             return;
         }
 
-        // 비밀번호 일치 검사
         if (this.registerPassword !== this.confirmPassword) {
-            alert("비밀번호가 일치하지 않습니다.");
+            this.toast.show("비밀번호가 일치하지 않습니다.", "error");
             return;
         }
 
-        // ⭐ 약관 동의 체크
         if (!this.acceptTerms) {
-            alert("약관에 동의해 주세요.");
+            this.toast.show("약관에 동의해 주세요.", "error");
             return;
         }
 
-        // 회원가입 시도
         this.authService.tryRegister(this.registerEmail, this.registerPassword).subscribe({
             next: () => {
-                alert("회원가입에 성공했습니다!");
+                this.toast.show("회원가입 성공!", "success");
                 this.toggleCard();
             },
-            error: (err) => alert(err.message)
+            error: (err) => this.toast.show(err.message, "error")
         });
     }
 
@@ -161,5 +126,4 @@ export class SignInComponent implements OnInit, OnDestroy {
         const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return pattern.test(email);
     }
-
 }

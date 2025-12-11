@@ -1,166 +1,217 @@
-/* =======================
-    검색창 (기존 CSS)
-======================= */
+/* ================================
+   🔍 검색 영역 전체
+================================ */
 .search-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   width: 100%;
+  gap: 16px;
+  padding: 10px 16px;
 }
 
+/* 검색 박스 */
 .search-box {
+  width: 100%;
+  max-width: 420px;
   display: flex;
   gap: 8px;
-  width: 400px;
 }
 
 .search-box input {
   flex: 1;
   padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #666;
-  background: #222;
-  color: #fff;
+  /* 🔥 줄였음 */
+  background: #1b1b1b;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  /* 🔥 줄였음 */
+  color: white;
+  font-size: 14px;
+  /* 🔥 줄였음 */
 }
 
 .search-btn {
-  padding: 10px 18px;
-  background: #fff;
-  color: #000;
-  border-radius: 6px;
+  padding: 10px 14px;
+  /* 🔥 컴팩트하게 축소 */
+  background: #e50914;
+  color: white;
+  border-radius: 8px;
+  /* 🔥 줄였음 */
+  border: none;
+  font-weight: bold;
+  font-size: 13px;
+  /* 🔥 줄였음 */
   cursor: pointer;
-  transition: 0.2s;
 }
 
 .search-btn:hover {
-  background: #ddd;
+  background: #b2060f;
 }
 
 
-/* =======================
-    필터 드롭다운 (기존 CSS)
-======================= */
+/* =====================================
+   🎛 필터 영역 (장르 / 평점 / 언어)
+===================================== */
 .dropdown-container {
-  margin-top: 15px;
+  width: 100%;
+  max-width: 420px;
   display: flex;
-  align-items: center;
-  gap: 15px;
+  flex-direction: column;
+  gap: 10px;
+  /* 🔥 좁게 */
 }
 
 .filter-title {
-  color: #fff;
-  font-size: 14px;
-  margin-right: 10px;
+  font-size: 13px;
+  /* 🔥 조금 줄임 */
+  color: #ddd;
+  margin-bottom: 2px;
 }
 
+/* 필터 개별 박스 */
 .custom-select {
-  min-width: 120px;
+  width: 100%;
   position: relative;
-  display: inline-block;
 }
 
 .select-selected {
-  background-color: black;
-  color: white;
+  background: #2b2b2b;
   padding: 10px;
-  border: 1px solid #fff;
+  /* 🔥 작게 */
+  border-radius: 8px;
+  /* 🔥 작게 */
+  border: 1px solid #444;
+  color: white;
   font-size: 14px;
-  cursor: pointer;
+  /* 🔥 줄였음 */
+  text-align: center;
 }
 
 .select-items {
-  display: block;
-  position: absolute;
-  background-color: #333;
-  border: 1px solid #fff;
-  z-index: 99;
-  top: 100%;
-  left: 0;
-  right: 0;
+  background: #222;
+  border-radius: 8px;
+  /* 🔥 줄임 */
+  margin-top: 4px;
+  border: 1px solid #444;
+  overflow: hidden;
 }
 
 .select-items div {
-  color: white;
   padding: 10px;
-  cursor: pointer;
+  /* 🔥 컴팩트 */
+  border-bottom: 1px solid #333;
+  font-size: 14px;
+  /* 🔥 통일감 */
+  text-align: center;
 }
 
 .select-items div:hover {
-  background-color: #575757;
+  background: #444;
 }
 
 .clear-options {
-  min-width: 120px;
-  background-color: black;
-  color: white;
+  width: 100%;
+  background: #444;
   padding: 10px;
-  border: 1px solid #fff;
+  /* 🔥 컴팩트 */
+  border-radius: 8px;
+  /* 🔥 축소 */
+  color: white;
+  border: 1px solid #666;
   font-size: 14px;
-  cursor: pointer;
 }
 
 .clear-options:hover {
-  background-color: #333;
+  background: #555;
 }
 
 
-/* =======================
-    최근 검색어 Chip UI (새로 추가)
-======================= */
+/* ================================
+   🕒 최근 검색어
+================================ */
 .recent-wrapper {
-  margin-top: 25px;
   width: 100%;
   max-width: 420px;
+  margin-top: 6px;
+  /* 🔥 컴팩트 */
 }
 
 .recent-title {
-  font-size: 18px;
+  color: white;
+  font-size: 16px;
+  /* 🔥 자연스럽게 축소 */
   font-weight: bold;
-  margin-bottom: 12px;
-  color: #fff;
-  text-align: right;
+  margin-bottom: 4px;
 }
 
 .recent-chip-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  justify-content: flex-end;
+  gap: 8px;
+  /* 🔥 조금 줄임 */
 }
 
 .recent-chip {
+  background: #333;
+  border: 1px solid #555;
+  padding: 8px 12px;
+  /* 🔥 작음 */
+  border-radius: 16px;
+  /* 🔥 크기 축소 */
+  color: white;
+  font-size: 13px;
+  /* 🔥 작고 예쁨 */
   display: flex;
   align-items: center;
-  background-color: #2a2a2a;
-  border: 1px solid #444;
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-size: 14px;
-  color: #fff;
-  cursor: pointer;
-  transition: 0.25s ease;
-}
-
-.recent-chip .icon {
-  margin-right: 6px;
+  gap: 4px;
 }
 
 .recent-chip:hover {
-  background-color: #444;
-  transform: translateY(-2px);
+  background: #444;
 }
 
-.recent-chip:active {
-  transform: scale(0.96);
+/* 슬라이드 다운 애니메이션 */
+@keyframes slideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-@media (max-width: 480px) {
-  .recent-chip-container {
-    gap: 8px;
+/* 열릴 때 애니메이션 적용 */
+.select-items {
+  animation: slideDown 0.18s ease-out;
+}
+
+@media (prefers-color-scheme: dark) {
+  .search-box input {
+    background: #111;
+    border-color: #444;
+    color: #eee;
+  }
+
+  .select-selected {
+    background: #1b1b1b;
+    border-color: #555;
+  }
+
+  .select-items {
+    background: #222;
+    border-color: #444;
+  }
+
+  .clear-options {
+    background: #333;
+    border-color: #666;
   }
 
   .recent-chip {
-    font-size: 12px;
-    padding: 6px 12px;
+    background: #2a2a2a;
   }
 }
