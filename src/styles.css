@@ -113,12 +113,10 @@ body {
 
 
 /* =============================
-    🔥 추가된 반응형 기능 시작
+    🔥 추가된 반응형 기능
 ============================= */
 
-/* -----------------------------
-   📌 (1) 반응형 기본 폰트 스케일링
------------------------------- */
+/* 📌 (1) 반응형 폰트 스케일 */
 :root {
   font-size: 16px;
 }
@@ -135,20 +133,14 @@ body {
   }
 }
 
-
-/* -----------------------------
-   📌 (2) 반응형 이미지 규칙
------------------------------- */
+/* 📌 (2) 이미지 규칙 */
 img {
   max-width: 100%;
   height: auto;
   display: block;
 }
 
-
-/* -----------------------------
-   📌 (3) 공통 Flex/Grid 유틸리티
------------------------------- */
+/* 📌 (3) Flex/Grid 유틸리티 */
 .flex {
   display: flex;
 }
@@ -163,20 +155,14 @@ img {
   display: grid;
 }
 
-
-/* -----------------------------
-   📌 (4) 화면 회전 대응
------------------------------- */
+/* 📌 (4) 화면 회전 대응 */
 @media (orientation: landscape) and (max-height: 500px) {
   body {
     font-size: 13px;
   }
 }
 
-
-/* -----------------------------
-   📌 (5) 인기 콘텐츠 기본 그리드 (home-popular fallback)
------------------------------- */
+/* 📌 (5) 인기 콘텐츠 기본 그리드 */
 .popular-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -193,4 +179,112 @@ img {
   .popular-grid {
     grid-template-columns: 1fr;
   }
+}
+
+
+/* =============================
+   🔥 전역 UI 업그레이드
+============================= */
+
+/* 1) 전체 다크 톤 통일 */
+body {
+  background-color: #141414 !important;
+  color: #ffffff;
+  font-family: 'Noto Sans KR', 'Inter', system-ui, sans-serif;
+  letter-spacing: -0.2px;
+}
+
+a {
+  color: #e5e5e5;
+  transition: 0.2s ease;
+}
+
+a:hover {
+  color: #ffffff;
+}
+
+/* 2) 전역 Glass 효과 유틸리티 */
+.glass {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+/* 3) 텍스트 렌더링 고급화 */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+p {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 4) 버튼 업그레이드 - Netflix 스타일 */
+button {
+  border-radius: 6px;
+  border: none;
+  padding: 0.7em 1.5em;
+  background-color: #e50914;
+  color: white;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+button:hover {
+  background-color: #f6121d;
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* 5) 영화 카드 hover 공통 클래스 */
+.card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card-hover:hover {
+  transform: scale(1.06);
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.45);
+}
+
+/* 6) Modern Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* 7) 간격 유틸리티 */
+.mt-1 {
+  margin-top: 4px;
+}
+
+.mt-2 {
+  margin-top: 8px;
+}
+
+.mt-3 {
+  margin-top: 12px;
+}
+
+.mt-4 {
+  margin-top: 16px;
+}
+
+.mt-5 {
+  margin-top: 24px;
 }
