@@ -6,9 +6,11 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  /* 🔥 모바일 포함 전체 가운데 정렬 */
   width: 100%;
-  padding: 0 20px;
+  padding: 0 16px;
+  /* 🔥 모바일에서 양쪽 여백 확보 */
 }
 
 /* =============================
@@ -18,7 +20,8 @@
   width: 100%;
   position: relative;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+  /* 🔥 flex-end → center로 변경하여 짤림 해결 */
   margin-top: 10px;
 }
 
@@ -29,9 +32,6 @@
   width: 100%;
 }
 
-/* =============================
-   검색 영역 위로 올리기 (기존 코드 유지)
-============================= */
 .home-search-wrapper {
   margin-top: -40px;
 }
@@ -52,7 +52,6 @@
   padding-bottom: 40px;
 }
 
-/* 태블릿 */
 @media (max-width: 768px) {
   .search-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -60,7 +59,6 @@
   }
 }
 
-/* 모바일 */
 @media (max-width: 480px) {
   .search-grid {
     grid-template-columns: 1fr;
@@ -69,14 +67,16 @@
 }
 
 /* =============================
-   🔥 검색 옵션 (드롭다운, 필터)
+   🔥 검색 옵션 (필터 드롭다운)
 ============================= */
 .search-filter {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   margin: 15px 0 25px;
-  flex-wrap: wrap;
-  /* 줄바꿈 자동 */
+  width: 100%;
+  justify-content: center;
+  /* 🔥 모바일에서 가운데 정렬 */
 }
 
 .search-filter select {
@@ -88,21 +88,18 @@
   font-size: 15px;
 }
 
-/* 태블릿 & 모바일 */
+/* 태블릿 */
 @media (max-width: 768px) {
-  .search-filter {
-    width: 100%;
-    justify-content: center;
-  }
-
   .search-filter select {
     width: 45%;
   }
 }
 
+/* 모바일 */
 @media (max-width: 480px) {
   .search-filter select {
     width: 100%;
+    /* 🔥 드롭다운 짤림 해결 */
     text-align: center;
   }
 }
@@ -111,7 +108,9 @@
    🔥 검색창 디자인
 ============================= */
 .search-input {
-  width: 280px;
+  width: 300px;
+  max-width: 100%;
+  /* 🔥 모바일에서 자동 축소 */
   padding: 12px 14px;
   border-radius: 8px;
   border: none;
@@ -121,6 +120,7 @@
   font-size: 15px;
 }
 
+/* 모바일 */
 @media (max-width: 480px) {
   .search-input {
     width: 100%;
@@ -128,13 +128,9 @@
 }
 
 /* =============================
-    🔥 모바일에서 전체 정렬 조정
+    🔥 모바일전체 보정
 ============================= */
 @media (max-width: 768px) {
-  .container-search {
-    align-items: center;
-  }
-
   .container-search-bar {
     justify-content: center;
     margin-bottom: 15px;
