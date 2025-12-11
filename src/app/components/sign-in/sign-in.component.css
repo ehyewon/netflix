@@ -407,3 +407,36 @@ button:hover {
     z-index: 1;
   }
 }
+
+@media (max-width: 768px) {
+
+  /* 파란 바 공간 줄이기 */
+  .card.hidden {
+    padding-bottom: 60px !important;
+    /* 기존 120px → 60px로 축소 */
+  }
+
+  /* hidden 상태 위치도 더 자연스럽게 */
+  #register.hidden,
+  #login.hidden {
+    top: calc(5svh + 110px) !important;
+    /* 기존보다 더 자연스럽게 */
+  }
+}
+
+/* 🔵 모바일에서 로그인 아래 파란 영역 줄이기 */
+@media (max-width: 768px) {
+  #login {
+    padding-bottom: 30px !important;
+    /* 기존보다 훨씬 줄임 */
+  }
+
+  #login.hidden {
+    padding-bottom: 40px !important;
+    /* 카드 애니메이션 있을 때도 줄이기 */
+  }
+
+  .card:not(.hidden) {
+    margin-bottom: 0 !important;
+  }
+}
