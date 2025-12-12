@@ -110,7 +110,6 @@ function prevPage() {
   if (page.value > 1) {
     page.value--;
     loadGridMovies();
-    window.scrollTo({ top: 0 });
   }
 }
 
