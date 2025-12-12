@@ -126,7 +126,7 @@ src/
 - 빌드 결과물(dist)은 gh-pages 브랜치를 통해 GitHub Pages에 배포됩니다.
 
 🔗 배포 주소  
-https://깃허브아이디.github.io/레포지토리명/
+https://ehyewon.github.io/netflix/
 
 ---
 
