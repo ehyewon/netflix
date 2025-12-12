@@ -95,7 +95,6 @@ src/
  │   ├─ FeaturedMovie.vue
  │   ├─ Header.vue
  │   ├─ MovieCard.vue
- │   ├─ MovieCategory.vue
  │   ├─ MovieDetail.vue
  │   ├─ MovieList.vue
  │   └─ Toast.vue
@@ -105,7 +104,6 @@ src/
  │   └─ useWishlist.js
  ├─ router/
  │   └─ index.js           # 라우터 설정
- ├─ store/                 # Pinia 스토어
  ├─ views/                 # 페이지 컴포넌트
  │   ├─ Home.vue
  │   ├─ Popular.vue
