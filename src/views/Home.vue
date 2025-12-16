@@ -35,6 +35,9 @@ watch(selectedMovie, (val) => {
 
 // API 호출
 onMounted(async () => {
+    document.body.addEventListener("open-movie", (e) => {
+    selectedMovie.value = e.detail;
+  });
   popular.value = await getPopular();
   action.value = await getAction();
   topRated.value = await getTopRated();

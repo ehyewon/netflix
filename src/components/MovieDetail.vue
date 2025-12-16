@@ -1,49 +1,60 @@
 <template>
-  <!-- 전체 공간 오버레이 -->
-  <div
-    class="world"
-    :style="{ background: backgroundStyle }"
-    @click.self="close"
-  >
-    <!-- 영화 카드 -->
-    <section
-      class="cinema"
-      :class="{ active: entered }"
-    >
-      <!-- 상단 비주얼 -->
-      <div class="visual">
-        <img
-          :src="posterUrl"
-          alt="poster"
-          class="poster"
-        />
+  <div class="world" @click.self="close">
+    <section class="cinema" :class="{ active: entered }">
 
-        <!-- 영화의 온도 -->
-        <div class="temperature">
-          {{ temperature }}
-        </div>
+      <!-- LEFT : 포스터 -->
+      <div class="visual">
+        <img :src="posterUrl" class="poster" />
+        <div class="temperature">{{ temperature }}</div>
       </div>
 
-      <!-- 정보 영역 -->
+      <!-- RIGHT : 정보 -->
       <div class="info">
-        <p class="tagline">
-          {{ movie.tagline || "이 영화는 이런 분위기의 작품입니다." }}
-        </p>
+        <p class="tagline">{{ movie.tagline || "이 영화는 이런 분위기의 작품입니다." }}</p>
 
         <h1 class="title">{{ movie.title }}</h1>
 
-        <p class="meta">
-          {{ movie.release_date }} · ⭐ {{ movie.vote_average }}
-        </p>
+        <!-- 메타 정보 -->
+        <div class="meta">
+          <span>{{ year }}</span>
+          <span>{{ runtime }}분</span>
+          <span>⭐ {{ movie.vote_average }}</span>
+        </div>
 
-        <p class="overview">
-          {{ movie.overview }}
-        </p>
+        <!-- 장르 -->
+        <div class="genres">
+          <span v-for="g in genres" :key="g" class="genre">
+            {{ g }}
+          </span>
+        </div>
 
+        <p class="overview">{{ movie.overview }}</p>
+
+        <!-- 버튼 -->
         <div class="actions">
           <button class="primary">▶ 재생</button>
           <button class="ghost" @click="close">현실로 돌아가기</button>
         </div>
+
+        <!-- 관련 영화 -->
+        <div v-if="similar.length" class="related">
+          <h3>🎞 비슷한 분위기의 영화</h3>
+
+          <div class="related-row">
+            <div
+              v-for="m in similar"
+              :key="m.id"
+              class="related-card"
+              @click="selectSimilar(m)"
+            >
+              <img
+                :src="`https://image.tmdb.org/t/p/w300${m.poster_path}`"
+              />
+              <p>{{ m.title }}</p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
   </div>
@@ -51,233 +62,85 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import axios from "axios";
 
-/* ===============================
-   Props
-================================ */
 const props = defineProps({
-  movie: {
-    type: Object,
-    required: true,
-  },
+  movie: Object,
 });
-
 const emit = defineEmits(["close"]);
 
-/* ===============================
-   상태
-================================ */
 const entered = ref(false);
+const detail = ref(null);
+const similar = ref([]);
 
-/* ===============================
-   계산된 값
-================================ */
+/* =====================
+   계산 값
+===================== */
 const posterUrl = computed(() =>
   `https://image.tmdb.org/t/p/w500${props.movie.poster_path}`
 );
 
-// ⭐ 영화의 온도 (평점 → 감각화)
-const temperature = computed(() => {
-  const score = props.movie.vote_average || 0;
-  return `${Math.round(score * 4)}°C`;
-});
+const temperature = computed(() =>
+  `${Math.round((props.movie.vote_average || 0) * 4)}°C`
+);
 
-// ⭐ 전체 배경 무드
-const backgroundStyle = computed(() => {
-  return `
-    radial-gradient(
-      circle at top,
-      rgba(255,255,255,0.08),
-      rgba(0,0,0,0.95)
-    )
-  `;
-});
+const year = computed(() =>
+  props.movie.release_date?.slice(0, 4)
+);
 
-/* ===============================
+const runtime = computed(() => detail.value?.runtime || "-");
+
+const genres = computed(() =>
+  detail.value?.genres?.map(g => g.name) || []
+);
+
+/* =====================
+   API
+===================== */
+async function loadDetail() {
+  const res = await axios.get(
+    `https://api.themoviedb.org/3/movie/${props.movie.id}`,
+    {
+      params: { api_key: import.meta.env.VITE_TMDB_API_KEY, language: "ko-KR" },
+    }
+  );
+  detail.value = res.data;
+}
+
+async function loadSimilar() {
+  const res = await axios.get(
+    `https://api.themoviedb.org/3/movie/${props.movie.id}/similar`,
+    {
+      params: { api_key: import.meta.env.VITE_TMDB_API_KEY, language: "ko-KR" },
+    }
+  );
+  similar.value = res.data.results.slice(0, 10);
+}
+
+/* =====================
    라이프사이클
-================================ */
-onMounted(() => {
-  setTimeout(() => {
-    entered.value = true;
-  }, 100);
+===================== */
+onMounted(async () => {
+  await loadDetail();
+  await loadSimilar();
+  setTimeout(() => (entered.value = true), 100);
 });
 
-/* ===============================
-   닫기
-================================ */
+/* =====================
+   액션
+===================== */
 function close() {
   entered.value = false;
   setTimeout(() => emit("close"), 300);
 }
+
+function selectSimilar(movie) {
+  emit("close");
+  setTimeout(() => {
+    // Home.vue의 openDetail이 다시 실행됨
+    document.body.dispatchEvent(
+      new CustomEvent("open-movie", { detail: movie })
+    );
+  }, 300);
+}
 </script>
-
-<style scoped>
-/* ===============================
-   WORLD (영화 세계)
-================================ */
-.world {
-  position: fixed;
-  inset: 0;
-  z-index: 3000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  animation: fadeIn 0.4s ease;
-}
-
-/* ===============================
-   CINEMA CARD
-================================ */
-.cinema {
-  width: min(1000px, 92%);
-  height: 560px;
-  background: #0f0f0f;
-  border-radius: 20px;
-  display: flex;
-  overflow: hidden;
-  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.9);
-
-  transform: scale(0.9) translateY(40px);
-  opacity: 0;
-  transition: all 0.4s ease;
-}
-
-.cinema.active {
-  transform: scale(1) translateY(0);
-  opacity: 1;
-}
-
-/* ===============================
-   VISUAL
-================================ */
-.visual {
-  position: relative;
-  width: 40%;
-  background: black;
-}
-
-.poster {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* 영화 온도 */
-.temperature {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  font-size: 32px;
-  font-weight: bold;
-  background: rgba(0, 0, 0, 0.6);
-  padding: 10px 16px;
-  border-radius: 12px;
-}
-
-/* ===============================
-   INFO
-================================ */
-.info {
-  width: 60%;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-}
-
-.tagline {
-  font-size: 14px;
-  opacity: 0.6;
-  margin-bottom: 10px;
-}
-
-.title {
-  font-size: 36px;
-  margin-bottom: 8px;
-}
-
-.meta {
-  font-size: 14px;
-  opacity: 0.7;
-  margin-bottom: 20px;
-}
-
-.overview {
-  font-size: 15px;
-  line-height: 1.7;
-  opacity: 0.9;
-  flex: 1;
-}
-
-/* ===============================
-   ACTIONS
-================================ */
-.actions {
-  display: flex;
-  gap: 14px;
-  margin-top: 30px;
-}
-
-.primary {
-  background: #e50914;
-  border: none;
-  padding: 14px 24px;
-  border-radius: 10px;
-  font-size: 15px;
-  color: white;
-  cursor: pointer;
-}
-
-.ghost {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  padding: 14px 24px;
-  border-radius: 10px;
-  font-size: 15px;
-  color: white;
-  cursor: pointer;
-}
-
-.primary:hover,
-.ghost:hover {
-  transform: translateY(-2px);
-}
-
-/* ===============================
-   ANIMATION
-================================ */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* ===============================
-   MOBILE
-================================ */
-@media (max-width: 768px) {
-  .cinema {
-    flex-direction: column;
-    height: 90%;
-  }
-
-  .visual,
-  .info {
-    width: 100%;
-  }
-
-  .visual {
-    height: 40%;
-  }
-
-  .info {
-    padding: 24px;
-  }
-
-  .title {
-    font-size: 26px;
-  }
-}
-</style>
