@@ -52,6 +52,10 @@
 </template>
 
 <script setup>
+/* TMDB API Key 형식 검사 */
+const isValidApiKey = (key) =>
+  /^[a-f0-9]{32}$/.test(key);
+  
 import { ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
@@ -130,54 +134,58 @@ const toggle = () => {
 };
 
 /* ===============================
-   회원가입
+   회원가입 (TMDB API Key 검증용)
 ================================ */
 async function handleSignup() {
+  // 1️⃣ 필수 입력 검사
   if (!signId.value || !signPw.value || !signPw2.value) {
     showToast("모든 항목을 입력해주세요.");
     return;
   }
 
+  // 2️⃣ 이메일 형식 검사
   if (!isValidEmail(signId.value)) {
     showToast("이메일 형식이 올바르지 않습니다.");
     return;
   }
 
-  if (signPw.value !== signPw2.value) {
-    showToast("비밀번호가 일치하지 않습니다.");
+  // 3️⃣ TMDB API Key 형식 검사 (32자리 hex)
+  const apiKeyPattern = /^[a-f0-9]{32}$/;
+  if (!apiKeyPattern.test(signPw.value)) {
+    showToast("비밀번호에는 TMDB API Key를 입력해주세요.");
     return;
   }
 
+  // 4️⃣ API Key 확인 일치 검사
+  if (signPw.value !== signPw2.value) {
+    showToast("API Key가 서로 일치하지 않습니다.");
+    return;
+  }
+
+  // 5️⃣ 약관 동의 확인
   if (!agree.value) {
     showToast("필수 약관에 동의해야 합니다.");
     return;
   }
 
-  const accounts = JSON.parse(localStorage.getItem("accounts") || "{}");
-
-  if (accounts[signId.value]) {
-    showToast("이미 존재하는 계정입니다.");
-    return;
-  }
-
+  // 6️⃣ TMDB API Key 실제 유효성 검증
   try {
     await axios.get("https://api.themoviedb.org/3/movie/popular", {
-      headers: {
-        Authorization: `Bearer ${import.meta.env.VITE_TMDB_ACCESS_TOKEN}`,
+      params: {
+        api_key: signPw.value, // ⭐ 입력한 API Key로 검증
       },
     });
   } catch {
-    showToast("인증 서버 오류");
+    showToast("유효하지 않은 TMDB API Key입니다.");
     return;
   }
 
-  accounts[signId.value] = { password: signPw.value };
-  localStorage.setItem("accounts", JSON.stringify(accounts));
+  // ✅ 회원가입 성공 (과제용: 실제 계정 생성 ❌)
+  successMsg.value = "🎉 회원가입 완료! (TMDB API Key 확인됨)";
 
-  successMsg.value = "🎉 회원가입 완료!";
   setTimeout(() => {
     successMsg.value = "";
-    showSignup.value = false;
+    showSignup.value = false; // 로그인 화면으로 전환
   }, 1200);
 }
 
@@ -186,7 +194,7 @@ async function handleSignup() {
 ================================ */
 async function handleLogin() {
   if (!loginId.value || !loginPw.value) {
-    showToast("아이디와 비밀번호를 입력해주세요.");
+    showToast("이메일과 TMDB API Key를 입력해주세요.");
     return;
   }
 
@@ -195,50 +203,33 @@ async function handleLogin() {
     return;
   }
 
-  const accounts = JSON.parse(localStorage.getItem("accounts") || "{}");
-  const account = accounts[loginId.value];
-
-  if (!account || account.password !== loginPw.value) {
-    showToast("아이디 또는 비밀번호가 일치하지 않습니다.");
-    return;
-  }
-
   try {
+    // 🔥 TMDB API Key로 실제 인증 요청
     await axios.get("https://api.themoviedb.org/3/movie/popular", {
-      headers: {
-        Authorization: `Bearer ${import.meta.env.VITE_TMDB_ACCESS_TOKEN}`,
+      params: {
+        api_key: loginPw.value, // ⭐ API Key를 query로
       },
     });
-  } catch {
-    showToast("인증 서버 오류");
-    return;
-  }
+    // ✅ 여기까지 왔다는 건 인증 성공
+    login(loginId.value);
 
-// 🔑 로그인 상태 저장
-login(loginId.value);
+    // 자동 로그인 처리
+    if (saveId.value) {
+      localStorage.setItem("savedId", loginId.value);
+      localStorage.setItem("autoLogin", "true");
+    }
 
-// 🔥 아이디 저장 / 자동 로그인 처리 (수정)
-if (saveId.value) {
-  // 체크한 경우 → 현재 이메일을 저장
-  localStorage.setItem("savedId", loginId.value);
-  localStorage.setItem("autoLogin", "true");
-} else {
-  // ❗중요: 현재 로그인한 이메일이 savedId일 때만 제거
-  const savedId = localStorage.getItem("savedId");
+    successMsg.value = "🎉 로그인 성공!";
+    setTimeout(() => {
+      successMsg.value = "";
+      router.push("/");
+    }, 500);
 
-  if (savedId === loginId.value) {
-    localStorage.removeItem("savedId");
-    localStorage.removeItem("autoLogin");
+  } catch (err) {
+    showToast("TMDB API Key가 올바르지 않습니다.");
   }
 }
 
-
-  successMsg.value = "🎉 로그인 성공!";
-  setTimeout(() => {
-    successMsg.value = "";
-    router.push("/");
-  }, 500);
-}
 </script>
 
 <style scoped>

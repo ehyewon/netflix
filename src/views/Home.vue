@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, provide } from "vue";
+import { ref, onMounted, provide, watch } from "vue";
 import FeaturedMovie from "@/components/FeaturedMovie.vue";
 import MovieList from "@/components/MovieList.vue";
 import MovieDetail from "@/components/MovieDetail.vue";
@@ -14,11 +14,24 @@ const topRated = ref([]);
 
 const selectedMovie = ref(null);
 
-// 상세 모달 열기
+/* =========================
+   🔥 상세페이지 열기 (연출 진입)
+========================= */
 function openDetail(movie) {
   selectedMovie.value = movie;
 }
 provide("openDetail", openDetail);
+
+/* =========================
+   🔥 상세 열릴 때 스크롤 잠금
+========================= */
+watch(selectedMovie, (val) => {
+  if (val) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
+});
 
 // API 호출
 onMounted(async () => {
@@ -40,9 +53,10 @@ onMounted(async () => {
     <MovieList title="⭐ 평점 높은 영화" :movies="topRated" />
     <MovieList title="💥 액션 영화" :movies="action" />
 
-    <!-- 상세 모달 -->
+    <!-- 🔥 상세 페이지 (연출형) -->
     <MovieDetail
       v-if="selectedMovie"
+      :key="selectedMovie.id"  
       :movie="selectedMovie"
       @close="selectedMovie = null"
     />

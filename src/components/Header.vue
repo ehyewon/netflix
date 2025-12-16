@@ -9,7 +9,11 @@
         <RouterLink to="/">홈</RouterLink>
         <RouterLink to="/popular">인기</RouterLink>
         <RouterLink to="/search">검색</RouterLink>
-        <RouterLink to="/wishlist">찜목록</RouterLink>
+
+        <!-- 🔥 로그인 상태에서만 찜목록 표시 -->
+        <RouterLink v-if="auth.isLogin" to="/wishlist">
+          찜목록
+        </RouterLink>
       </nav>
     </div>
 
@@ -38,7 +42,15 @@
     <RouterLink @click="closeMenu" to="/">홈</RouterLink>
     <RouterLink @click="closeMenu" to="/popular">인기</RouterLink>
     <RouterLink @click="closeMenu" to="/search">검색</RouterLink>
-    <RouterLink @click="closeMenu" to="/wishlist">찜목록</RouterLink>
+
+    <!-- 🔥 로그인 상태에서만 찜목록 표시 -->
+    <RouterLink
+      v-if="auth.isLogin"
+      @click="closeMenu"
+      to="/wishlist"
+    >
+      찜목록
+    </RouterLink>
 
     <hr />
 

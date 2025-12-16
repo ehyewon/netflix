@@ -1,3 +1,4 @@
+// src/composables/useAuth.js
 import { reactive } from "vue";
 
 const auth = reactive({
@@ -20,8 +21,6 @@ export function useAuth() {
 
         localStorage.removeItem("isLogin");
         localStorage.removeItem("loginEmail");
-
-        // 🔥 자동 로그인 완전 차단
         localStorage.removeItem("autoLogin");
     }
 

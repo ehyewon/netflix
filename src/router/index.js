@@ -4,16 +4,16 @@ import Signin from "@/views/Signin.vue";
 import Popular from "@/views/Popular.vue";
 import Search from "@/views/Search.vue";
 import Wishlist from "@/views/Wishlist.vue";
+import { useAuth } from "@/composables/useAuth.js";
 
 const router = createRouter({
-    // 🔥 GitHub Pages에서 SPA 새로고침/직접접근까지 모두 안정
     history: createWebHashHistory(),
     routes: [
         {
             path: "/",
             name: "Home",
             component: Home,
-            meta: { requiresAuth: true }, // 🔒 로그인 필요
+            meta: { requiresAuth: true },
         },
         {
             path: "/popular",
@@ -41,21 +41,15 @@ const router = createRouter({
     ],
 });
 
-/* ===============================
-   🔐 로그인 라우팅 가드
-================================ */
+/* 🔐 로그인 라우팅 가드 */
 router.beforeEach((to, from, next) => {
-    const isLogin = localStorage.getItem("isLogin") === "true";
+    const { auth } = useAuth();
 
-    // 로그인 필요한 페이지인데 로그인 안돼있으면 → 로그인 페이지
-    if (to.meta.requiresAuth && !isLogin) {
-        next({ path: "/signin" });
-    }
-    // 로그인 상태인데 signin 접근하면 → 홈
-    else if (to.path === "/signin" && isLogin) {
-        next({ path: "/" });
-    }
-    else {
+    if (to.meta.requiresAuth && !auth.isLogin) {
+        next("/signin");
+    } else if (to.path === "/signin" && auth.isLogin) {
+        next("/");
+    } else {
         next();
     }
 });
