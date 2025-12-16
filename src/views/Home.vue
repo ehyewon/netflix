@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, provide } from "vue";
+import { ref, onMounted, provide, watch } from "vue";
 import FeaturedMovie from "@/components/FeaturedMovie.vue";
 import MovieList from "@/components/MovieList.vue";
 import MovieDetail from "@/components/MovieDetail.vue";
@@ -51,6 +51,17 @@ onMounted(async () => {
 
   featured.value = popular.value[0];
 });
+
+watch(selectedMovie, (val) => {
+  if (val) {
+    // 상세페이지 열림 → 홈 스크롤 잠금
+    document.body.style.overflow = "hidden";
+  } else {
+    // 상세페이지 닫힘 → 홈 스크롤 복구
+    document.body.style.overflow = "";
+  }
+});
+
 </script>
 
 <template>
@@ -83,4 +94,24 @@ onMounted(async () => {
   min-height: 100vh;
   padding-bottom: 60px;
 }
+
+.modal {
+  width: 92%;
+  max-width: 760px;
+
+  /* ⭐ 핵심 2줄 */
+  max-height: 90vh;
+  overflow-y: auto;
+
+  background: #0f0f0f;
+  border-radius: 18px;
+  color: #fff;
+}
+
+@media (max-width: 480px) {
+  .modal {
+    max-height: 92vh;
+  }
+}
+
 </style>

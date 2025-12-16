@@ -123,23 +123,52 @@ const headerStyle = computed(() => {
   inset: 0;
   background: rgba(0,0,0,0.78);
   backdrop-filter: blur(8px);
+
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;   /* ⭐ 여기 */
+
+  padding-top: 40px;         /* ⭐ 여기 */
+  padding-bottom: 40px;
+
   z-index: 2000;
 }
+
 
 /* 모달 */
 .modal {
   width: 92%;
   max-width: 760px;
+
+  max-height: calc(100vh - 80px); /* ⭐ padding 고려 */
+  overflow-y: auto;
+
   background: #0f0f0f;
   border-radius: 18px;
-  overflow: hidden;
-  color: #fff;
-  box-shadow: 0 30px 80px rgba(0,0,0,0.7);
-  animation: modalIn .35s ease;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.3) transparent;
+  
 }
+
+/* 상세페이지 스크롤바 */
+.modal::-webkit-scrollbar {
+  width: 6px;               /* 얇게 */
+}
+
+.modal::-webkit-scrollbar-track {
+  background: transparent;  /* 배경 숨김 */
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+}
+
+.modal::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.45);
+}
+
 
 /* 헤더 */
 .header {
@@ -274,41 +303,6 @@ const headerStyle = computed(() => {
   color: #ddd;
 }
 
-.trailer {
-  padding: 0 28px 30px;
-}
-
-.trailer-title {
-  font-size: 1.1rem;
-  margin-bottom: 12px;
-}
-
-.trailer-wrapper {
-  padding-top: 50%;
-  max-width: 720px;
-  margin: 0 auto;
-}
-
-.trailer-wrapper iframe {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-/* 헤더 예고편 */
-
-.trailer-layer iframe {
-  width: 100%;
-  height: 100%;
-}
-
-/* 레이어 순서 */
-
-.header-text {
-  z-index: 2;
-}
-
 /* 🎬 줄거리 위 예고편 */
 .trailer {
   padding: 0 28px 24px;
@@ -323,7 +317,7 @@ const headerStyle = computed(() => {
 .trailer-wrapper {
   position: relative;
   width: 100%;
-  padding-top: 50%;        /* 16:9보다 살짝 작게 */
+  padding-top: 50%;        /* PC에서 살짝 컴팩트 */
   max-width: 720px;
   margin: 0 auto;
   border-radius: 12px;
@@ -338,17 +332,22 @@ const headerStyle = computed(() => {
   height: 100%;
 }
 
-
 /* 모바일 */
 @media (max-width: 480px) {
-  .header { height: 240px; }
-  .title { font-size: 1.4rem; }
-    .trailer {
+  .header {
+    height: 240px;
+  }
+
+  .title {
+    font-size: 1.4rem;
+  }
+
+  .trailer {
     padding: 0 16px 20px;
   }
 
   .trailer-wrapper {
-    padding-top: 56.25%; /* 모바일에선 16:9로 안정 */
+    padding-top: 56.25%; /* 모바일은 16:9 */
   }
 }
 
